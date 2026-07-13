@@ -1,13 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=23 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
 [ext_resource type="Texture2D" uid="uid://r2dku3w11u4a" path="res://sprites/face_1.png" id="2_lc2xo"]
 [ext_resource type="Texture2D" uid="uid://chlx8provpw24" path="res://sprites/pelvis.png" id="3_7sc4i"]
 [ext_resource type="Texture2D" uid="uid://pxcvute1dx5m" path="res://big_iron.png" id="3_fc0e3"]
-[ext_resource type="Texture2D" uid="uid://cub33uiyaoe0e" path="res://sprites/right_thigh.png" id="4_80cx4"]
+[ext_resource type="Texture2D" uid="uid://l7s6yhsr1ldw" path="res://sprites/thigh_right.png" id="4_80cx4"]
 [ext_resource type="Texture2D" uid="uid://bed4asy5f80wk" path="res://sprites/hand_open_1.PNG" id="5_7jktm"]
-[ext_resource type="Texture2D" uid="uid://b22geo8pshl6i" path="res://sprites/right_foot.png" id="5_80cx4"]
 [ext_resource type="Script" uid="uid://c0xfwdnjck1uv" path="res://hand.gd" id="5_ryrav"]
 [ext_resource type="Texture2D" uid="uid://8dumcapi2k0i" path="res://sprites/hand_closed_1.PNG" id="6_eow3j"]
 [ext_resource type="Texture2D" uid="uid://dcwfbce7d5clc" path="res://sprites/hand_open_2.PNG" id="8_hve3p"]
@@ -44,17 +43,6 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_80cx4")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_boyg6"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("5_80cx4")
 }],
 "loop": true,
 "name": &"default",
@@ -141,33 +129,10 @@ offset = Vector2(0, 350)
 
 [node name="RightThigh" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(254, 259)
+position = Vector2(65, 217.00002)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_rvswv")
-offset = Vector2(110, 150)
-
-[node name="LeftThigh" type="AnimatedSprite2D" parent="."]
-z_index = -1
-position = Vector2(-173, 321)
-scale = Vector2(0.75, 0.75)
-sprite_frames = SubResource("SpriteFrames_rvswv")
-offset = Vector2(110, -150)
-flip_v = true
-
-[node name="RightFoot" type="AnimatedSprite2D" parent="."]
-z_index = -1
-position = Vector2(798, 326)
-scale = Vector2(0.75, 0.75)
-sprite_frames = SubResource("SpriteFrames_boyg6")
-offset = Vector2(120, 50)
-
-[node name="LeftFoot" type="AnimatedSprite2D" parent="."]
-z_index = -1
-position = Vector2(575, 253)
-scale = Vector2(0.75, 0.75)
-sprite_frames = SubResource("SpriteFrames_boyg6")
-offset = Vector2(120, -50)
-flip_v = true
+offset = Vector2(-80, 300)
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
 z_index = -1
@@ -195,7 +160,7 @@ sprite_frames = SubResource("SpriteFrames_7sc4i")
 offset = Vector2(120, 10)
 
 [node name="Forearm" type="AnimatedSprite2D" parent="."]
-position = Vector2(231, 102.00001)
+position = Vector2(202.99997, 106)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_215e1")
 offset = Vector2(150, 5)

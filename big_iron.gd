@@ -9,8 +9,6 @@ var spin_speed = 0
 # COG = center of gravity.
 var cog_dist = 40
 
-@onready var screen_size = get_viewport_rect().size
-
 func _draw() -> void:
 	draw_circle(Vector2.ZERO, 10, Color.BLUE)
 	draw_circle(Vector2(cog_dist, 0), 10, Color.RED)
@@ -26,6 +24,7 @@ func get_cog() -> Vector2:
 func _physics_process(delta: float) -> void:
 	queue_redraw()
 	
+	var screen_size = get_viewport_rect().size
 	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
 	if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
 		is_grabbed = true
@@ -67,7 +66,7 @@ func _physics_process(delta: float) -> void:
 		move_speed += Game.gravity * delta
 		position += move_speed * delta
 		
-		var clamp_pos = position.clamp(Vector2(-500, -9999), Vector2(500, 300))
+		var clamp_pos = position.clamp(Vector2(-screen_size.x / 2, -9999), Vector2(screen_size.x / 2, screen_size.y / 2))
 		if clamp_pos.y != position.y:
 			move_speed.y *= -0.5
 		if clamp_pos.x != position.x:

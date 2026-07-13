@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=3 uid="uid://dsx05bj2ix1ud"]
+
+[ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
+[ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
+[ext_resource type="Script" uid="uid://b27727a5u566g" path="res://pendulum.gd" id="2_e2o6t"]
+[ext_resource type="Texture2D" uid="uid://pxcvute1dx5m" path="res://big_iron.png" id="3_fc0e3"]
+[ext_resource type="Texture2D" uid="uid://bed4asy5f80wk" path="res://sprites/hand_open_1.PNG" id="5_7jktm"]
+[ext_resource type="Script" uid="uid://c0xfwdnjck1uv" path="res://hand.gd" id="5_ryrav"]
+[ext_resource type="Texture2D" uid="uid://8dumcapi2k0i" path="res://sprites/hand_closed_1.PNG" id="6_eow3j"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fc0e3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_eow3j")
+}],
+"loop": true,
+"name": &"closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_7jktm")
+}],
+"loop": true,
+"name": &"open",
+"speed": 5.0
+}]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_feb5d")
+
+[node name="BigIron" type="Node2D" parent="."]
+position = Vector2(200, 200)
+script = ExtResource("1_80nbo")
+
+[node name="Sprite2D" type="Sprite2D" parent="BigIron"]
+position = Vector2(28, -8)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_fc0e3")
+
+[node name="Pendulum" type="Node2D" parent="." node_paths=PackedStringArray("parent")]
+visible = false
+script = ExtResource("2_e2o6t")
+parent = NodePath("../BigIron")
+
+[node name="Hand" type="Node2D" parent="."]
+position = Vector2(608, 340)
+script = ExtResource("5_ryrav")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hand"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_fc0e3")
+animation = &"closed"
+offset = Vector2(-107.025, 17.295)

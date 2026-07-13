@@ -8,5 +8,4 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	position = get_global_mouse_position()
-	$AnimatedSprite2D.animation = "closed" if Input.is_action_pressed("grab") else "open"
+	pass

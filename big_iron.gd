@@ -7,7 +7,7 @@ var move_speed = Vector2.ZERO
 var spin_speed = 0
 
 # COG = center of gravity.
-var cog_dist = 120
+var cog_dist = 40
 
 @onready var screen_size = get_viewport_rect().size
 
@@ -26,7 +26,7 @@ func get_cog() -> Vector2:
 func _physics_process(delta: float) -> void:
 	queue_redraw()
 	
-	var mouse_pos = get_global_mouse_position()
+	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
 	if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
 		is_grabbed = true
 	if not Input.is_action_pressed("grab"):
@@ -35,6 +35,8 @@ func _physics_process(delta: float) -> void:
 	spin_speed *= pow(0.3, delta)
 	
 	if is_grabbed:
+		z_index = -1
+		
 		var prev_speed = move_speed
 		var prev_pos = position
 		position += (mouse_pos - position) * pow(0.2, delta)
@@ -58,12 +60,14 @@ func _physics_process(delta: float) -> void:
 		rotation += spin_speed * delta
 
 	else:
+		z_index = 0
+		
 		# Slough speed.
 		move_speed = move_speed * pow(0.9, delta)
 		move_speed += Game.gravity * delta
 		position += move_speed * delta
 		
-		var clamp_pos = position.clamp(Vector2(0, -9999), screen_size)
+		var clamp_pos = position.clamp(Vector2(-500, -9999), Vector2(500, 300))
 		if clamp_pos.y != position.y:
 			move_speed.y *= -0.5
 		if clamp_pos.x != position.x:

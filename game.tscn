@@ -1,12 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=15 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
-[ext_resource type="Script" uid="uid://b27727a5u566g" path="res://pendulum.gd" id="2_e2o6t"]
 [ext_resource type="Texture2D" uid="uid://pxcvute1dx5m" path="res://big_iron.png" id="3_fc0e3"]
 [ext_resource type="Texture2D" uid="uid://bed4asy5f80wk" path="res://sprites/hand_open_1.PNG" id="5_7jktm"]
 [ext_resource type="Script" uid="uid://c0xfwdnjck1uv" path="res://hand.gd" id="5_ryrav"]
 [ext_resource type="Texture2D" uid="uid://8dumcapi2k0i" path="res://sprites/hand_closed_1.PNG" id="6_eow3j"]
+[ext_resource type="Texture2D" uid="uid://dcwfbce7d5clc" path="res://sprites/hand_open_2.PNG" id="8_hve3p"]
+[ext_resource type="Texture2D" uid="uid://b3xu06byil711" path="res://sprites/hand_open_3.PNG" id="9_mfdv2"]
+[ext_resource type="Texture2D" uid="uid://63mtc4f6d6qj" path="res://sprites/hand_open_4.PNG" id="10_iotsf"]
+[ext_resource type="Texture2D" uid="uid://djyeilut2vp13" path="res://sprites/forearm.png" id="11_iotsf"]
+[ext_resource type="Texture2D" uid="uid://6bcc32xrf4ag" path="res://sprites/bicep.png" id="12_lc2xo"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fc0e3"]
 animations = [{
@@ -21,17 +25,72 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("5_7jktm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_hve3p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_mfdv2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_iotsf")
 }],
 "loop": true,
 "name": &"open",
+"speed": 10.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7sc4i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_lc2xo")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_215e1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_iotsf")
+}],
+"loop": true,
+"name": &"default",
 "speed": 5.0
 }]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_feb5d")
 
+[node name="Hand" type="Node2D" parent="."]
+position = Vector2(158.99997, -2)
+script = ExtResource("5_ryrav")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hand"]
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SpriteFrames_fc0e3")
+animation = &"open"
+autoplay = "open"
+frame_progress = 0.8090028
+offset = Vector2(-107.025, 17.295)
+
+[node name="Bicep" type="AnimatedSprite2D" parent="."]
+position = Vector2(-259, 111.00003)
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("SpriteFrames_7sc4i")
+offset = Vector2(120, 10)
+
+[node name="Forearm" type="AnimatedSprite2D" parent="."]
+position = Vector2(202.99997, 106)
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("SpriteFrames_215e1")
+offset = Vector2(150, 5)
+
 [node name="BigIron" type="Node2D" parent="."]
-position = Vector2(200, 200)
+position = Vector2(-249.00003, -142)
 script = ExtResource("1_80nbo")
 
 [node name="Sprite2D" type="Sprite2D" parent="BigIron"]
@@ -39,17 +98,4 @@ position = Vector2(28, -8)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_fc0e3")
 
-[node name="Pendulum" type="Node2D" parent="." node_paths=PackedStringArray("parent")]
-visible = false
-script = ExtResource("2_e2o6t")
-parent = NodePath("../BigIron")
-
-[node name="Hand" type="Node2D" parent="."]
-position = Vector2(608, 340)
-script = ExtResource("5_ryrav")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hand"]
-scale = Vector2(0.5, 0.5)
-sprite_frames = SubResource("SpriteFrames_fc0e3")
-animation = &"closed"
-offset = Vector2(-107.025, 17.295)
+[node name="Camera2D" type="Camera2D" parent="."]

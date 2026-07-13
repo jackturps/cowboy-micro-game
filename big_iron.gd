@@ -1,5 +1,13 @@
 extends Node2D
 
+enum State {
+	holstered,
+	falling,
+	grabbed,
+}
+
+var state: State = State.holstered
+
 const grab_dist_thresh = 150.0
 var is_grabbed = false
 
@@ -10,8 +18,9 @@ var spin_speed = 0
 var cog_dist = 40
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 10, Color.BLUE)
-	draw_circle(Vector2(cog_dist, 0), 10, Color.RED)
+	#draw_circle(Vector2.ZERO, 10, Color.BLUE)
+	#draw_circle(Vector2(cog_dist, 0), 10, Color.RED)
+	pass
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -27,18 +36,20 @@ func _physics_process(delta: float) -> void:
 	var screen_size = get_viewport_rect().size
 	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
 	if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
-		is_grabbed = true
-	if not Input.is_action_pressed("grab"):
-		is_grabbed = false
+		state = State.grabbed
+	if state != State.holstered and not Input.is_action_pressed("grab"):
+		state = State.falling
 	
 	spin_speed *= pow(0.3, delta)
 	
-	if is_grabbed:
+	if state in [State.grabbed, State.holstered]:
+		var target_pos = mouse_pos if state == State.grabbed else get_node("../Pelvis").position + Vector2(-85, 0)
+		
 		z_index = -1
 		
 		var prev_speed = move_speed
 		var prev_pos = position
-		position += (mouse_pos - position) * pow(0.2, delta)
+		position += (target_pos - position) * pow(0.2, delta)
 		
 		# Smooth out our speed over a few frames.
 		var instant_speed = (position - prev_pos) / delta
@@ -58,7 +69,7 @@ func _physics_process(delta: float) -> void:
 		spin_speed += spin_force * delta
 		rotation += spin_speed * delta
 
-	else:
+	elif state == State.falling:
 		z_index = 0
 		
 		# Slough speed.

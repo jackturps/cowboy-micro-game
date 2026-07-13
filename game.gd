@@ -64,7 +64,6 @@ func _physics_process(delta: float) -> void:
 	$Head.position = $Torso.position + Vector2(140, -80)
 	$Head.rotation = ($BigIron.position - $Head.position).angle() * smoothstep(0, half_screen.y, gun_height)
 
-
 	# Legs.
 	$Pelvis.position = $Bicep.position + Vector2(80, 310)
 	

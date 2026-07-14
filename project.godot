@@ -31,3 +31,4 @@ grab={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.58069915, 0.7291102, 0.97819525, 1)

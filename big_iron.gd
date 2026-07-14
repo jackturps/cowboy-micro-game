@@ -77,7 +77,7 @@ func _physics_process(delta: float) -> void:
 		move_speed += Game.gravity * delta
 		position += move_speed * delta
 		
-		var clamp_pos = position.clamp(Vector2(-screen_size.x / 2, -9999), Vector2(screen_size.x / 2, screen_size.y / 2))
+		var clamp_pos = position.clamp(Vector2(-screen_size.x / 2, -999999), Vector2(screen_size.x / 2, screen_size.y / 2))
 		if clamp_pos.y != position.y:
 			move_speed.y *= -0.5
 		if clamp_pos.x != position.x:

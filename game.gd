@@ -2,6 +2,7 @@
 Credits:
 	https://unsplash.com/photos/a-man-sitting-on-a-chair-outside-qon55SxMVCw
 	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
+	https://www.dafont.com/vanilla-whale.font?l[]=10
 
 Shout Outs:
 	Tropic of Dinosaur: https://www.gamepoems.com/issue01/
@@ -63,14 +64,23 @@ func _physics_process(delta: float) -> void:
 	$Hand.rotation = $Forearm.rotation
 	
 	
-	var gun_height = max(0, -1 * $BigIron.position.y)
-	var gun_excess = max(0, gun_height - half_screen.y)
-	$Camera2D.position = Vector2(0.0, -gun_excess / 2)
-	$Camera2D.zoom = Vector2.ONE * min(1, abs(1.5 * half_screen.y / max(1, gun_height)))
+	#var gun_height = max(0, -1 * $BigIron.position.y)
+	#var gun_excess = max(0, gun_height - half_screen.y)
+	#$Camera2D.position = Vector2(0.0, -gun_excess / 2)
+	#$Camera2D.zoom = Vector2.ONE * min(1, abs(1.5 * half_screen.y / max(1, gun_height)))
+
+	var gun_pos = $BigIron.position + $BigIron.get_cog()
+	var gun_margin = 0.1 * abs(gun_pos.y)
+	var cam_top = gun_pos.y - gun_margin
+	var cam_bot = half_screen.y + 600 * smoothstep(-half_screen.y, -10000, cam_top)
+	var cam_y_frame = abs(cam_bot - cam_top)
+	
+	$Camera2D.position.y = min(0, cam_bot - (cam_y_frame / 2))
+	$Camera2D.zoom = Vector2.ONE * min(1, screen_size.y / max(cam_y_frame, 1))
 
 
 	$Head.position = $Torso.position + Vector2(140, -80)
-	$Head.rotation = ($BigIron.position - $Head.position).angle() * smoothstep(0, half_screen.y, gun_height)
+	#$Head.rotation = ($BigIron.position - $Head.position).angle() * smoothstep(0, half_screen.y, gun_height)
 
 	# Legs.
 	$Pelvis.position = $Bicep.position + Vector2(80, 310)

@@ -7,6 +7,7 @@ enum State {
 }
 
 var state: State = State.holstered
+var grounded = false
 
 const grab_dist_thresh = 250.0
 var is_grabbed = false
@@ -16,6 +17,13 @@ var spin_speed = 0
 
 # COG = center of gravity.
 var cog_dist = 60
+
+# In radians.
+var flip_progress = 0.0
+
+signal hit_ground
+signal flip_caught
+signal released
 
 func _draw() -> void:
 	#draw_circle(Vector2.ZERO, 10, Color.BLUE)
@@ -36,14 +44,21 @@ func _physics_process(delta: float) -> void:
 	var screen_size = get_viewport_rect().size
 	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
 	if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
+		if state == State.falling and not grounded:
+			flip_caught.emit(flip_progress)
+		flip_progress = 0.0
 		state = State.grabbed
-	if state != State.holstered and not Input.is_action_pressed("grab"):
+		grounded = false
+	if state == State.grabbed and not Input.is_action_pressed("grab"):
 		state = State.falling
+		released.emit()
 	
 	
 	
 	if state in [State.grabbed, State.holstered]:
 		spin_speed *= pow(0.2, delta)
+		
+		flip_progress = 0.0
 		
 		var target_pos = mouse_pos if state == State.grabbed else get_node("../Pelvis").position + Vector2(-85, 0)
 		
@@ -80,6 +95,10 @@ func _physics_process(delta: float) -> void:
 		var clamp_pos = position.clamp(Vector2(-screen_size.x / 2, -999999), Vector2(screen_size.x / 2, screen_size.y / 2))
 		if clamp_pos.y != position.y:
 			move_speed.y *= -0.5
+			if position.y > 0 and not grounded:
+				hit_ground.emit()
+				flip_progress = 0.0
+				grounded = true
 		if clamp_pos.x != position.x:
 			move_speed.x *= -0.8
 		position = clamp_pos
@@ -89,6 +108,8 @@ func _physics_process(delta: float) -> void:
 		var rotate_offset = -center_of_gravity
 		position = rotate_offset.rotated(spin_speed * delta) + world_pivot
 		rotation += spin_speed * delta
+		
+		flip_progress += abs(spin_speed * delta)
 			
 	"""
 	How do apply force along the pendulum? You take the gravity component, and then

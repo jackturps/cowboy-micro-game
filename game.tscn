@@ -1,24 +1,30 @@
-[gd_scene load_steps=30 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=40 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
 [ext_resource type="Texture2D" uid="uid://cipanootrs7il" path="res://sprites/ground.png" id="2_e8heu"]
 [ext_resource type="Texture2D" uid="uid://cvilxtq2o8edd" path="res://sprites/paper_texture.jpg" id="2_hb5m1"]
-[ext_resource type="Texture2D" uid="uid://r2dku3w11u4a" path="res://sprites/face_1.png" id="2_lc2xo"]
 [ext_resource type="Texture2D" uid="uid://chlx8provpw24" path="res://sprites/pelvis.png" id="3_7sc4i"]
 [ext_resource type="FontFile" uid="uid://s5pq5850xgpr" path="res://fonts/Vanilla Whale.otf" id="3_boyg6"]
 [ext_resource type="Texture2D" uid="uid://pxcvute1dx5m" path="res://big_iron.png" id="3_fc0e3"]
 [ext_resource type="Texture2D" uid="uid://cub33uiyaoe0e" path="res://sprites/right_thigh.png" id="4_80cx4"]
+[ext_resource type="Shader" uid="uid://bawci4fnea2qr" path="res://sky.gdshader" id="4_f1jbl"]
 [ext_resource type="Texture2D" uid="uid://bed4asy5f80wk" path="res://sprites/hand_open_1.PNG" id="5_7jktm"]
 [ext_resource type="Texture2D" uid="uid://b22geo8pshl6i" path="res://sprites/right_foot.png" id="5_80cx4"]
+[ext_resource type="Texture2D" uid="uid://cf22y3mmgxfg7" path="res://sprites/face_blink.png" id="5_qhcbd"]
 [ext_resource type="Script" uid="uid://c0xfwdnjck1uv" path="res://hand.gd" id="5_ryrav"]
+[ext_resource type="Texture2D" uid="uid://crobjk5lq5n0g" path="res://sprites/cloud.png" id="5_vaj68"]
 [ext_resource type="Texture2D" uid="uid://8dumcapi2k0i" path="res://sprites/hand_closed_1.PNG" id="6_eow3j"]
+[ext_resource type="Texture2D" uid="uid://cg3nt4wokn6e4" path="res://sprites/face_2.png" id="6_qhcbd"]
 [ext_resource type="Texture2D" uid="uid://dcwfbce7d5clc" path="res://sprites/hand_open_2.PNG" id="8_hve3p"]
 [ext_resource type="Texture2D" uid="uid://b3xu06byil711" path="res://sprites/hand_open_3.PNG" id="9_mfdv2"]
 [ext_resource type="Texture2D" uid="uid://63mtc4f6d6qj" path="res://sprites/hand_open_4.PNG" id="10_iotsf"]
 [ext_resource type="Texture2D" uid="uid://djyeilut2vp13" path="res://sprites/forearm.png" id="11_iotsf"]
 [ext_resource type="Texture2D" uid="uid://86wsij6l6urb" path="res://sprites/torso.png" id="12_iotsf"]
 [ext_resource type="Texture2D" uid="uid://6bcc32xrf4ag" path="res://sprites/bicep.png" id="12_lc2xo"]
+[ext_resource type="AudioStream" uid="uid://by45ooecui4sv" path="res://sfx/whip_1.mp3" id="20_x5p1p"]
+[ext_resource type="AudioStream" uid="uid://dam55q3vvrnlv" path="res://sfx/whip_3.mp3" id="21_qhcbd"]
+[ext_resource type="AudioStream" uid="uid://dp1t2e4m6d4lk" path="res://sfx/whip_2.mp3" id="22_f1jbl"]
 
 [sub_resource type="Theme" id="Theme_e36ub"]
 default_font = ExtResource("3_boyg6")
@@ -28,11 +34,31 @@ default_font_size = 800
 default_font = ExtResource("3_boyg6")
 default_font_size = 800
 
+[sub_resource type="Gradient" id="Gradient_f1jbl"]
+offsets = PackedFloat32Array(0, 0.1903409, 0.8551136, 0.9943182)
+colors = PackedColorArray(0.36, 0.68, 1, 1, 0.33999997, 0.4279999, 1, 1, 0.13288002, 0.07479999, 0.22, 1, 0.04536, 0.023799999, 0.07, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vaj68"]
+gradient = SubResource("Gradient_f1jbl")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vaj68"]
+shader = ExtResource("4_f1jbl")
+shader_parameter/sky_gradient = SubResource("GradientTexture1D_vaj68")
+shader_parameter/texture_size = Vector2(0, 0)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_80cx4"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_lc2xo")
+"texture": ExtResource("5_qhcbd")
+}],
+"loop": true,
+"name": &"blink",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_qhcbd")
 }],
 "loop": true,
 "name": &"default",
@@ -133,13 +159,16 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="Theme" id="Theme_hb5m1"]
+default_font = ExtResource("3_boyg6")
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_feb5d")
 
 [node name="PaperTexture" type="TextureRect" parent="."]
-offset_left = -19570.0
-offset_top = -36841.0
-offset_right = 19551.0
+offset_left = -43124.0
+offset_top = -82470.0
+offset_right = 43105.0
 offset_bottom = 4771.0
 texture = ExtResource("2_hb5m1")
 stretch_mode = 1
@@ -168,17 +197,26 @@ theme_override_font_sizes/font_size = 120
 text = "F O R   G U N   S L I N G I N G"
 horizontal_alignment = 1
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -960.0
-offset_top = -37932.0
-offset_right = 960.0
+[node name="Sky" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vaj68")
+offset_left = -100000.0
+offset_top = -83116.0
+offset_right = 100000.0
 offset_bottom = 699.0
 color = Color(0.39560002, 0.6578, 0.92, 1)
 
-[node name="Ground" type="Sprite2D" parent="."]
-position = Vector2(-3.0398369e-05, 381)
-scale = Vector2(0.49999997, 1)
+[node name="Cloud" type="Sprite2D" parent="."]
+position = Vector2(573, -378)
+texture = ExtResource("5_vaj68")
+
+[node name="Ground" type="TextureRect" parent="."]
+offset_left = -100000.0
+offset_top = 463.5
+offset_right = 296246.06
+offset_bottom = 1105.5
+scale = Vector2(0.49999997, 0.73364484)
 texture = ExtResource("2_e8heu")
+stretch_mode = 1
 
 [node name="Head" type="AnimatedSprite2D" parent="."]
 position = Vector2(26, -224.99998)
@@ -220,7 +258,7 @@ flip_v = true
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
 position = Vector2(-115, -147)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_mfdv2")
 offset = Vector2(180, 200)
 
@@ -258,4 +296,23 @@ scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_215e1")
 offset = Vector2(150, 5)
 
+[node name="InstructionLabel" type="RichTextLabel" parent="."]
+offset_left = -969.0
+offset_top = -201.0
+offset_right = 967.0
+offset_bottom = 451.0
+theme = SubResource("Theme_hb5m1")
+theme_override_font_sizes/normal_font_size = 350
+text = "B I G   I R O N"
+horizontal_alignment = 1
+
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Whip1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("20_x5p1p")
+
+[node name="Whip2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("21_qhcbd")
+
+[node name="Whip3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("22_f1jbl")

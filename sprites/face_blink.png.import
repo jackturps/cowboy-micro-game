@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dagbl2rv2s2mk"
-valid=false
+uid="uid://cf22y3mmgxfg7"
+path="res://.godot/imported/face_blink.png-a3cdf267cb7e741080313f4e4a487596.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
-source_file="res://sprites/face.png"
+source_file="res://sprites/face_blink.png"
+dest_files=["res://.godot/imported/face_blink.png-a3cdf267cb7e741080313f4e4a487596.ctex"]
 
 [params]
 

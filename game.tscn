@@ -148,7 +148,7 @@ offset = Vector2(110, 150)
 
 [node name="LeftThigh" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(-173, 321)
+position = Vector2(0, 323)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_rvswv")
 offset = Vector2(110, -150)
@@ -156,17 +156,17 @@ flip_v = true
 
 [node name="RightFoot" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(798, 326)
+position = Vector2(597, 447)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_boyg6")
-offset = Vector2(120, 50)
+offset = Vector2(120, 140)
 
 [node name="LeftFoot" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(575, 253)
+position = Vector2(-1, 423)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_boyg6")
-offset = Vector2(120, -50)
+offset = Vector2(120, -130)
 flip_v = true
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
@@ -175,6 +175,15 @@ position = Vector2(-115, -147)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_mfdv2")
 offset = Vector2(180, 200)
+
+[node name="BigIron" type="Node2D" parent="."]
+position = Vector2(-249.00003, -142)
+script = ExtResource("1_80nbo")
+
+[node name="Sprite2D" type="Sprite2D" parent="BigIron"]
+position = Vector2(28, -8)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_fc0e3")
 
 [node name="Hand" type="Node2D" parent="."]
 position = Vector2(158.99997, -2)
@@ -199,14 +208,5 @@ position = Vector2(231, 102.00001)
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_215e1")
 offset = Vector2(150, 5)
-
-[node name="BigIron" type="Node2D" parent="."]
-position = Vector2(-249.00003, -142)
-script = ExtResource("1_80nbo")
-
-[node name="Sprite2D" type="Sprite2D" parent="BigIron"]
-position = Vector2(28, -8)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("3_fc0e3")
 
 [node name="Camera2D" type="Camera2D" parent="."]

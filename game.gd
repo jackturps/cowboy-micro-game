@@ -11,7 +11,7 @@ const gravity = Vector2(0, 800)
 @onready var screen_size = get_viewport_rect().size
 
 func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
-	const thigh_len = 280
+	const thigh_len = 225
 	const foot_len = 250
 	
 	var leg_diff = foot.position - thigh.position
@@ -26,6 +26,11 @@ func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
 
 	thigh.rotation = thigh.position.angle_to_point(knee_pos)
 	foot.rotation = foot.position.angle_to_point(knee_pos)
+	
+	# TODO: Shrink sprite.
+	var foot_scale = max(1, foot.position.distance_to(knee_pos) / foot_len)
+	foot.scale.x = 0.75 * foot_scale
+	foot.scale.y = 0.75 * (1.0 / foot_scale)
 
 
 func _physics_process(delta: float) -> void:
@@ -36,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	$Hand/AnimatedSprite2D.animation = "closed" if Input.is_action_pressed("grab") else "open"
 	
 	# Bicep crooks as hand gets closer.
-	$Bicep.position = Vector2(0, -100) + (mouse_pos / half_screen) * Vector2(100, 50)
+	$Bicep.position = Vector2(0, -100) + (mouse_pos / half_screen) * Vector2(250, 150)
 	var elbow_bend = smoothstep(1000, 50, $Hand.position.distance_to($Bicep.position))
 	elbow_bend *= TAU / 3
 	$Bicep.rotation = ($Hand.position - $Bicep.position).angle() + elbow_bend
@@ -72,5 +77,5 @@ func _physics_process(delta: float) -> void:
 	solve_leg($RightThigh, $RightFoot, +1.0)
 
 	$LeftThigh.position = $Pelvis.position + Vector2(-60, 50)
-	$LeftFoot.position = Vector2(-300, half_screen.y - 50)
+	$LeftFoot.position = Vector2(-250, half_screen.y - 50)
 	solve_leg($LeftThigh, $LeftFoot, -1.0)

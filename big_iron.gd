@@ -45,8 +45,6 @@ func _physics_process(delta: float) -> void:
 	if state in [State.grabbed, State.holstered]:
 		var target_pos = mouse_pos if state == State.grabbed else get_node("../Pelvis").position + Vector2(-85, 0)
 		
-		z_index = -1
-		
 		var prev_speed = move_speed
 		var prev_pos = position
 		position += (target_pos - position) * pow(0.2, delta)
@@ -70,8 +68,6 @@ func _physics_process(delta: float) -> void:
 		rotation += spin_speed * delta
 
 	elif state == State.falling:
-		z_index = 0
-		
 		# Slough speed.
 		move_speed = move_speed * pow(0.9, delta)
 		move_speed += Game.gravity * delta

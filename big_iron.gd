@@ -8,14 +8,14 @@ enum State {
 
 var state: State = State.holstered
 
-const grab_dist_thresh = 150.0
+const grab_dist_thresh = 250.0
 var is_grabbed = false
 
 var move_speed = Vector2.ZERO
 var spin_speed = 0
 
 # COG = center of gravity.
-var cog_dist = 40
+var cog_dist = 60
 
 func _draw() -> void:
 	#draw_circle(Vector2.ZERO, 10, Color.BLUE)
@@ -40,9 +40,11 @@ func _physics_process(delta: float) -> void:
 	if state != State.holstered and not Input.is_action_pressed("grab"):
 		state = State.falling
 	
-	spin_speed *= pow(0.3, delta)
+	
 	
 	if state in [State.grabbed, State.holstered]:
+		spin_speed *= pow(0.2, delta)
+		
 		var target_pos = mouse_pos if state == State.grabbed else get_node("../Pelvis").position + Vector2(-85, 0)
 		
 		var prev_speed = move_speed
@@ -68,6 +70,8 @@ func _physics_process(delta: float) -> void:
 		rotation += spin_speed * delta
 
 	elif state == State.falling:
+		spin_speed *= pow(0.7, delta)
+		
 		# Slough speed.
 		move_speed = move_speed * pow(0.9, delta)
 		move_speed += Game.gravity * delta

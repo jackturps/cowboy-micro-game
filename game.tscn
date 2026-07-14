@@ -178,6 +178,7 @@ offset = Vector2(180, 200)
 
 [node name="BigIron" type="Node2D" parent="."]
 position = Vector2(-249.00003, -142)
+scale = Vector2(1.5, 1.5)
 script = ExtResource("1_80nbo")
 
 [node name="Sprite2D" type="Sprite2D" parent="BigIron"]

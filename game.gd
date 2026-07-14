@@ -2,11 +2,14 @@
 Credits:
 	https://unsplash.com/photos/a-man-sitting-on-a-chair-outside-qon55SxMVCw
 	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
+
+Shout Outs:
+	Tropic of Dinosaur: https://www.gamepoems.com/issue01/
 """
 
 class_name Game extends Node2D
 
-const gravity = Vector2(0, 800)
+const gravity = Vector2(0, 1000)
 
 @onready var screen_size = get_viewport_rect().size
 

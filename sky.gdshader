@@ -3,10 +3,6 @@ shader_type canvas_item;
 uniform sampler2D sky_gradient;
 uniform vec2 texture_size;
 
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
 vec2 rotate(vec2 v, float angle) {
     float s = sin(angle);
     float c = cos(angle);
@@ -18,30 +14,24 @@ void fragment() {
 	vec2 centered_uv = -0.5 + UV;
 	vec2 px_pos = centered_uv * texture_size;
 	
-	//float uv_height = 1.0 - UV.y;
-	float radial_radius = 0.8;
-	vec2 radial_center = vec2(0.0, radial_radius);
-	float uv_height = length(radial_center - centered_uv) - (radial_radius - 0.5);
+	float globe_radius = 0.8;
+	vec2 globe_center = vec2(0.0, globe_radius);
+	float uv_height = length(globe_center - centered_uv) - (globe_radius - 0.5);
 	COLOR = texture(sky_gradient, vec2(uv_height, 0.0));
 	
 	float space_prox = smoothstep(0.4, 0.7, uv_height);
-	for (float lattice_idx = 0.0; lattice_idx < 3.0; lattice_idx++) {
-		vec2 rotated_px_pos = rotate(px_pos,  lattice_idx * 3.0 / 17.0);
-		vec2 cell_size = vec2(
-			10000.0 + PI * 500.0 * lattice_idx, 
-			8000.0 - PI * 40.0 * lattice_idx
-		);
-		vec2 local_pos = mod(rotated_px_pos, cell_size);
-		vec2 cell_center = 0.5 * cell_size;
-		
-		float star_prox = smoothstep(80.0, 50.0, length(cell_center - local_pos));
-		COLOR.rgb = mix(COLOR.rgb, vec3(1.0), star_prox * space_prox);
+	if (space_prox > 0.0) {
+		for (float lattice_idx = 0.0; lattice_idx < 3.0; lattice_idx++) {
+			vec2 rotated_px_pos = rotate(px_pos,  lattice_idx * 3.0 / 17.0);
+			vec2 cell_size = vec2(
+				10000.0 + PI * 500.0 * lattice_idx, 
+				8000.0 - PI * 40.0 * lattice_idx
+			);
+			vec2 local_pos = mod(rotated_px_pos, cell_size);
+			vec2 cell_center = 0.5 * cell_size;
+			
+			float star_prox = smoothstep(80.0, 50.0, length(cell_center - local_pos));
+			COLOR.rgb = mix(COLOR.rgb, vec3(1.0), star_prox * space_prox);
+		}
 	}
-	
-	// Called for every pixel the material is visible on.
 }
-
-//void light() {
-//	// Called for every pixel for every light affecting the CanvasItem.
-//	// Uncomment to replace the default light processing function with this one.
-//}

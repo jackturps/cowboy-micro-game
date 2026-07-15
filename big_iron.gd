@@ -43,18 +43,26 @@ func get_cog() -> Vector2:
 func _physics_process(delta: float) -> void:
 	queue_redraw()
 	
+	var prev_rotation = rotation
+	
 	var screen_size = get_viewport_rect().size
 	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
-	if unlocked and Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
-		if state == State.falling and not grounded:
-			flip_caught.emit(flip_progress)
-		flip_progress = 0.0
-		state = State.grabbed
-		grounded = false
-	if state == State.grabbed and not Input.is_action_pressed("grab"):
-		state = State.falling
-		released.emit()
 	
+	# No transitions unless we're unlocked.
+	if unlocked:
+		if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
+			if state == State.falling and not grounded:
+				flip_caught.emit(flip_progress)
+			flip_progress = 0.0
+			state = State.grabbed
+			grounded = false
+			$Clatter.play()
+			
+		if state == State.grabbed and not Input.is_action_pressed("grab"):
+			state = State.falling
+			$Clatter.play()
+			released.emit()
+		
 	
 	
 	if state in [State.grabbed, State.holstered]:
@@ -112,26 +120,16 @@ func _physics_process(delta: float) -> void:
 		rotation += spin_speed * delta
 		
 		flip_progress += abs(spin_speed * delta)
-
-	"""
-	How do apply force along the pendulum? You take the gravity component, and then
-	limit that to whatever component is moving along the normal vector? But how do
-	we calculate just that component... is it the dot product? Lets try that out.
-	It might actually be the cross product.
+		
 	
-	Hm, this doesn't account for movement of the pendulum. How do we handle that?
-	When we move to the right that is translated into rotation for the pendulum...
-	because... because it can only exert force along the pendulum axis?
-	
-	Does the pendulum point need to just be a point that we constrain to the correct
-	length each frame?
-	
-	So lets start by ignoring gravity and getting a zero-g pendulum working.
-	"""
-	#pendulum_speed *= pow(0.5, delta)
-	#var pendulum_normal = -1 * pendulum_pos().normalized().orthogonal()
-	#var angular_force = pendulum_normal.dot(gravity_acc.normalized())
-	#var pendulum_acc = angular_force * gravity_acc.length()
-	#pendulum_speed += pendulum_acc * delta
-	#pendulum_angle += pendulum_speed * delta
-	
+	var volume_target = smoothstep(TAU, 20.0 * TAU, abs(spin_speed))
+	var volume_speed = 50.0 if volume_target > $Whoosh.volume_linear else 0.5
+	$Whoosh.volume_linear = move_toward($Whoosh.volume_linear, volume_target, volume_speed * delta)
+	$Whoosh.pitch_scale = 1.0 + 0.05 * $Whoosh.volume_linear
+	if round(rotation / TAU) != round(prev_rotation / TAU):
+		$Whoosh.play()
+		
+	var wind_target = smoothstep(200.0, 20000.0, move_speed.length())
+	volume_speed = 0.5 if volume_target > $Wind.volume_linear else 0.5
+	$Wind.volume_linear = move_toward($Wind.volume_linear, wind_target, volume_speed)
+	$Wind.pitch_scale = 1.0 + 0.1 * $Wind.volume_linear

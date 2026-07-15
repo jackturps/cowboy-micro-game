@@ -20,7 +20,7 @@ class_name Game extends Node2D
 
 const gravity = Vector2(0, 1000)
  
-@onready var screen_size = get_viewport_rect().size
+
 @onready var prev_gun_rotation = $BigIron.rotation
 
 var blink_countdown = 3.0
@@ -52,8 +52,6 @@ func on_released():
 	$InstructionLabel.text = ""
 
 func _ready() -> void:
-	$Wind.play()
-	
 	$BigIron.hit_ground.connect(on_hit_ground)
 	$BigIron.flip_caught.connect(on_flip_caught)
 	$BigIron.released.connect(on_released)
@@ -104,13 +102,15 @@ func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var screen_size = get_viewport_rect().size
+	
 	var half_screen = screen_size / 2
 	var mouse_pos = get_viewport().get_mouse_position() - half_screen
 	
 	$Hand.position = mouse_pos
 	$Hand/AnimatedSprite2D.animation = "closed" if Input.is_action_pressed("grab") else "open"
 	
-	# Bicep crooks as hand gets closer.
+	# Elbow crooks as hand gets closer.
 	$Bicep.position = Vector2(-300, -100) + (mouse_pos / half_screen) * Vector2(250, 150)
 	var elbow_bend = smoothstep(1000, 50, $Hand.position.distance_to($Bicep.position))
 	elbow_bend *= TAU / 3
@@ -119,8 +119,11 @@ func _physics_process(delta: float) -> void:
 	$Torso.position = $Bicep.position
 		
 	# Forearm points towards hand and squashes/stretches to make up distance.
-	const forearm_len = 350
-	var hand_diff = $Hand.position - $Forearm.position
+	const forearm_len = 300
+	
+	var wrist_pos = $Hand.position + Vector2(-85, 30).rotated($Hand.rotation)
+	
+	var hand_diff = wrist_pos - $Forearm.position
 	$Forearm.position = $Bicep.position + 210 * Vector2.RIGHT.rotated($Bicep.rotation)
 	$Forearm.rotation = (hand_diff).angle()
 	var stretch_factor = max(1, hand_diff.length()) / forearm_len
@@ -167,20 +170,5 @@ func _physics_process(delta: float) -> void:
 		else:
 			$Head.animation = "blink"
 			blink_countdown = randf_range(0.1, 0.2)
-
-	var spin_speed = abs($BigIron.spin_speed)
-	var volume_target = smoothstep(TAU, 20.0 * TAU, spin_speed)
-	var volume_speed = 50.0 if volume_target > $Whoosh.volume_linear else 0.5
-	$Whoosh.volume_linear = move_toward($Whoosh.volume_linear, volume_target, volume_speed * delta)
-	$Whoosh.pitch_scale = 1.0 + 0.05 * smoothstep(TAU, 3.0 * TAU, spin_speed)
-	if round($BigIron.rotation / TAU) != round(prev_gun_rotation / TAU):
-		$Whoosh.play()
-	prev_gun_rotation = $BigIron.rotation
-	
-	var wind_target = smoothstep(200.0, 20000.0, $BigIron.move_speed.length())
-	volume_speed = 0.5 if volume_target > $Wind.volume_linear else 0.5
-	$Wind.volume_linear = move_toward($Wind.volume_linear, wind_target, volume_speed)
-	$Wind.pitch_scale = 1.0 + 0.1 * $Wind.volume_linear
-
 	
 	$Sky.material.set_shader_parameter("texture_size", $Sky.size)

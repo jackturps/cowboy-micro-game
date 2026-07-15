@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=55 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
@@ -22,6 +22,9 @@
 [ext_resource type="Texture2D" uid="uid://djyeilut2vp13" path="res://sprites/forearm.png" id="11_iotsf"]
 [ext_resource type="Texture2D" uid="uid://86wsij6l6urb" path="res://sprites/torso.png" id="12_iotsf"]
 [ext_resource type="Texture2D" uid="uid://6bcc32xrf4ag" path="res://sprites/bicep.png" id="12_lc2xo"]
+[ext_resource type="AudioStream" uid="uid://cyrht0ggxgjn1" path="res://sfx/clatter_2.wav" id="17_4v2jo"]
+[ext_resource type="AudioStream" uid="uid://c2a3nrxfa8m23" path="res://sfx/clatter_3.wav" id="18_l1i01"]
+[ext_resource type="AudioStream" uid="uid://cidkwqhagdh7t" path="res://sfx/clatter_4.wav" id="19_r62pu"]
 [ext_resource type="AudioStream" uid="uid://by45ooecui4sv" path="res://sfx/whip_1.mp3" id="20_x5p1p"]
 [ext_resource type="AudioStream" uid="uid://dam55q3vvrnlv" path="res://sfx/whip_3.mp3" id="21_qhcbd"]
 [ext_resource type="AudioStream" uid="uid://dp1t2e4m6d4lk" path="res://sfx/whip_2.mp3" id="22_f1jbl"]
@@ -34,6 +37,7 @@
 [ext_resource type="AudioStream" uid="uid://dvvjdwrapfmof" path="res://sfx/whoosh_4.wav" id="30_dhpj7"]
 [ext_resource type="AudioStream" uid="uid://c3iuux5yxjj8f" path="res://sfx/whoosh_5.wav" id="31_7knny"]
 [ext_resource type="AudioStream" uid="uid://bid07ygtxc34y" path="res://sfx/sad_haw.wav" id="34_082n1"]
+[ext_resource type="AudioStream" uid="uid://btgvbfas7rqcy" path="res://sfx/clatter_1.wav" id="35_xex6t"]
 
 [sub_resource type="Theme" id="Theme_e36ub"]
 default_font = ExtResource("3_boyg6")
@@ -129,6 +133,21 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aa0lp"]
+streams_count = 4
+stream_0/stream = ExtResource("35_xex6t")
+stream_1/stream = ExtResource("17_4v2jo")
+stream_2/stream = ExtResource("18_l1i01")
+stream_3/stream = ExtResource("19_r62pu")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_bnpwn"]
+streams_count = 5
+stream_0/stream = ExtResource("29_7knny")
+stream_1/stream = ExtResource("29_dhpj7")
+stream_2/stream = ExtResource("29_xfvwf")
+stream_3/stream = ExtResource("30_dhpj7")
+stream_4/stream = ExtResource("31_7knny")
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_fc0e3"]
 animations = [{
 "frames": [{
@@ -171,14 +190,6 @@ animations = [{
 [sub_resource type="Theme" id="Theme_hb5m1"]
 default_font = ExtResource("3_boyg6")
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_bnpwn"]
-streams_count = 5
-stream_0/stream = ExtResource("29_7knny")
-stream_1/stream = ExtResource("29_dhpj7")
-stream_2/stream = ExtResource("29_xfvwf")
-stream_3/stream = ExtResource("30_dhpj7")
-stream_4/stream = ExtResource("31_7knny")
-
 [node name="Game" type="Node2D"]
 script = ExtResource("1_feb5d")
 
@@ -217,18 +228,18 @@ color = Color(0.39560002, 0.6578, 0.92, 1)
 [node name="Moon" type="Sprite2D" parent="."]
 position = Vector2(32812, -60984)
 rotation = 0.17278759
-scale = Vector2(11.212998, 11.212998)
+scale = Vector2(14, 14)
 texture = ExtResource("4_vaj68")
 
 [node name="Cloud" type="Sprite2D" parent="."]
-position = Vector2(573, -378)
+position = Vector2(557, -314)
 texture = ExtResource("5_vaj68")
 
 [node name="Ground" type="TextureRect" parent="."]
 offset_left = -100000.0
-offset_top = 463.5
+offset_top = 399.5
 offset_right = 296246.06
-offset_bottom = 1105.5
+offset_bottom = 1041.5
 scale = Vector2(0.49999997, 0.73364484)
 texture = ExtResource("2_e8heu")
 stretch_mode = 1
@@ -293,17 +304,27 @@ position = Vector2(28, -8)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_fc0e3")
 
+[node name="Clatter" type="AudioStreamPlayer" parent="BigIron"]
+stream = SubResource("AudioStreamRandomizer_aa0lp")
+
+[node name="Whoosh" type="AudioStreamPlayer" parent="BigIron"]
+stream = SubResource("AudioStreamRandomizer_bnpwn")
+max_polyphony = 8
+
+[node name="Wind" type="AudioStreamPlayer" parent="BigIron"]
+stream = ExtResource("28_7knny")
+autoplay = true
+
 [node name="Hand" type="Node2D" parent="."]
 position = Vector2(158.99997, -2)
 script = ExtResource("5_ryrav")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Hand"]
-scale = Vector2(0.6, 0.6)
+rotation = -0.034906585
 sprite_frames = SubResource("SpriteFrames_fc0e3")
-animation = &"open"
+animation = &"closed"
 autoplay = "open"
-frame_progress = 0.8090028
-offset = Vector2(-107.025, 17.295)
+offset = Vector2(-41.49, 8.935)
 
 [node name="Forearm" type="AnimatedSprite2D" parent="."]
 position = Vector2(231, 102.00001)
@@ -334,17 +355,11 @@ stream = ExtResource("22_f1jbl")
 
 [node name="LongYee" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("26_i2p71")
+volume_db = 12.0
 
 [node name="Haw" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("27_xa8c5")
-
-[node name="Wind" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("28_7knny")
-
-[node name="Whoosh" type="AudioStreamPlayer" parent="."]
-stream = SubResource("AudioStreamRandomizer_bnpwn")
-max_polyphony = 8
+volume_db = 6.0
 
 [node name="SadHaw" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("34_082n1")
-volume_db = -4.0

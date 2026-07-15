@@ -102,6 +102,8 @@ func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	var ebb = sin(1.2 * Time.get_ticks_msec() / 1000.0)
+	
 	var screen_size = get_viewport_rect().size
 	
 	var half_screen = screen_size / 2
@@ -113,10 +115,13 @@ func _physics_process(delta: float) -> void:
 	# Elbow crooks as hand gets closer.
 	$Bicep.position = Vector2(-300, -100) + (mouse_pos / half_screen) * Vector2(250, 150)
 	var elbow_bend = smoothstep(1000, 50, $Hand.position.distance_to($Bicep.position))
-	elbow_bend *= TAU / 3
+	elbow_bend *= (TAU / 3.0) + (TAU / 40.0) * ebb
 	$Bicep.rotation = ($Hand.position - $Bicep.position).angle() + elbow_bend
 	
 	$Torso.position = $Bicep.position
+	var torso_ebb = (1.0 + ebb * 0.02)
+	$Torso.scale.x = 0.35 * (1 / torso_ebb)
+	$Torso.scale.y = 0.35 * torso_ebb
 		
 	# Forearm points towards hand and squashes/stretches to make up distance.
 	const forearm_len = 300
@@ -138,7 +143,10 @@ func _physics_process(delta: float) -> void:
 	#$Camera2D.position = Vector2(0.0, -gun_excess / 2)
 	#$Camera2D.zoom = Vector2.ONE * min(1, abs(1.5 * half_screen.y / max(1, gun_height)))
 
-	var gun_pos = $BigIron.position + $BigIron.get_cog()
+	var gun_pos = $BigIron.position
+	if $BigIron.state == $BigIron.State.falling:
+		gun_pos += $BigIron.get_cog()
+
 	var gun_margin = 0.1 * abs(gun_pos.y)
 	var cam_top = gun_pos.y - gun_margin
 	var cam_bot = half_screen.y # + 600 * smoothstep(-half_screen.y, -10000, cam_top)
@@ -147,12 +155,13 @@ func _physics_process(delta: float) -> void:
 	$Camera2D.position.y = min(0, cam_bot - (cam_y_frame / 2))
 	$Camera2D.zoom = Vector2.ONE * min(1, screen_size.y / max(cam_y_frame, 1))
 
-
-	$Head.position = $Torso.position + Vector2(130, -40)
-	#$Head.rotation = ($BigIron.position - $Head.position).angle() * smoothstep(0, half_screen.y, gun_height)
+	$Head.position = $Torso.position + Vector2(95, -30)
+	var head_target = (gun_pos - $Head.position).angle() / 2 + (ebb * TAU / 80.0)
+	var head_smooving = 1.0 - pow(0.0005, delta)
+	$Head.rotation += angle_difference($Head.rotation, head_target) * head_smooving
 
 	# Legs.
-	$Pelvis.position = $Bicep.position + Vector2(80, 270)
+	$Pelvis.position = $Bicep.position + Vector2(60, 250) * Vector2(1, torso_ebb)
 	
 	$RightThigh.position = $Pelvis.position + Vector2(80, 60)
 	$RightFoot.position = Vector2(50, half_screen.y - 50)

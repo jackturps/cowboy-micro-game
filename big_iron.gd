@@ -1,4 +1,7 @@
-extends Node2D
+# Copyright (c) 2026 Jack Turpitt
+# Licensed under MIT with AI Training Restriction — see LICENSE
+
+class_name BigIron extends Node2D
 
 enum State {
 	holstered,
@@ -36,12 +39,17 @@ func _draw() -> void:
 func _ready() -> void:
 	pass # Replace with function body.
 
+
+"""
+C.O.G: center of gravity
+"""
 func get_cog() -> Vector2:
 	return cog_dist * Vector2.from_angle(rotation)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _physics_process(delta: float) -> void:
-	queue_redraw()
+	if not Game.started:
+		return
 	
 	var prev_rotation = rotation
 	
@@ -63,7 +71,6 @@ func _physics_process(delta: float) -> void:
 			$Clatter.play()
 			released.emit()
 		
-	
 	
 	if state in [State.grabbed, State.holstered]:
 		spin_speed *= pow(0.2, delta)
@@ -90,7 +97,6 @@ func _physics_process(delta: float) -> void:
 		var swing_magnitude = total_force.length() * sin(force_theta)
 		var spin_force = (TAU * swing_magnitude)
 		
-		# TODO: Spin friction.
 		spin_speed += spin_force * delta
 		rotation += spin_speed * delta
 
@@ -105,6 +111,7 @@ func _physics_process(delta: float) -> void:
 		var clamp_pos = position.clamp(Vector2(-screen_size.x / 2, -999999), Vector2(screen_size.x / 2, screen_size.y / 2))
 		if clamp_pos.y != position.y:
 			move_speed.y *= -0.5
+			move_speed.y = max(move_speed.y, -screen_size.y)
 			if position.y > 0 and not grounded:
 				hit_ground.emit()
 				flip_progress = 0.0
@@ -122,6 +129,10 @@ func _physics_process(delta: float) -> void:
 		flip_progress += abs(spin_speed * delta)
 		
 	
+	"""
+	Play a whoosh sound after each rotation. The sounds get louder and
+	higher pitched as we spin faster.
+	"""
 	var volume_target = smoothstep(TAU, 20.0 * TAU, abs(spin_speed))
 	var volume_speed = 50.0 if volume_target > $Whoosh.volume_linear else 0.5
 	$Whoosh.volume_linear = move_toward($Whoosh.volume_linear, volume_target, volume_speed * delta)
@@ -129,7 +140,10 @@ func _physics_process(delta: float) -> void:
 	if round(rotation / TAU) != round(prev_rotation / TAU):
 		$Whoosh.play()
 		
-	var wind_target = smoothstep(200.0, 20000.0, move_speed.length())
+	"""
+	Fade in a wind sound as we start to move faster.
+	"""
+	volume_target = smoothstep(200.0, 20000.0, move_speed.length())
 	volume_speed = 0.5 if volume_target > $Wind.volume_linear else 0.5
-	$Wind.volume_linear = move_toward($Wind.volume_linear, wind_target, volume_speed)
+	$Wind.volume_linear = move_toward($Wind.volume_linear, volume_target, volume_speed)
 	$Wind.pitch_scale = 1.0 + 0.1 * $Wind.volume_linear

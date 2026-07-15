@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Jack Turpitt
+# Licensed under MIT with AI Training Restriction — see LICENSE
+
 """
 Credits:
 	https://unsplash.com/photos/a-man-sitting-on-a-chair-outside-qon55SxMVCw
@@ -10,6 +13,9 @@ Credits:
 	https://pixabay.com/sound-effects/household-short-whoosh-13x-14526/
 	https://pixabay.com/sound-effects/nature-harsh-wind-515272/
 	https://pixabay.com/sound-effects/nature-cow-moo-122255/
+	https://unsplash.com/photos/white-clouds-and-blue-sky-during-daytime-A9_IsUtjHm4
+	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
+	https://unsplash.com/photos/brown-and-black-revolver-pistol-LSu04HMpL7A
 	Charlie Turpitt
 
 Shout Outs:
@@ -18,18 +24,43 @@ Shout Outs:
 
 class_name Game extends Node2D
 
+static var started = false
+
 const gravity = Vector2(0, 1000)
- 
 
 @onready var prev_gun_rotation = $BigIron.rotation
 
+
 var blink_countdown = 3.0
+
+static func is_colonq_build():
+	return OS.has_feature("colonq")
+
+
+func end_game(did_win: bool):
+	$BigIron.unlocked = false
+	
+	if is_colonq_build():
+		var tween = create_tween()
+		tween.tween_callback(func():
+			Game.started = false
+			var win_str = "true" if did_win else "false"
+			JavaScriptBridge.eval("window.parent.postMessage({op: \"done\", win: %s});" % [win_str])
+			get_tree().reload_current_scene()
+		).set_delay(2.63)
+	else:
+		var tween = create_tween()
+		tween.tween_callback(func():
+			$BigIron.unlocked = true
+			$InstructionLabel.text = ""
+		).set_delay(2.63)
 
 func on_hit_ground():
 	$LongYee.stop()
 	$SadHaw.play()
 	$InstructionLabel.text = "F U M B L E D"
-	$Whip3.play()
+	end_game(false)
+
 
 func on_flip_caught(flip_progress):
 	$LongYee.stop()
@@ -39,23 +70,32 @@ func on_flip_caught(flip_progress):
 		0: 
 			$InstructionLabel.text = "N O   F L I P S"
 			$SadHaw.play()
+			end_game(false)
 		1:
 			$InstructionLabel.text = "1   F L I P"
 			$Haw.play()
+			end_game(true)
 		_:
 			$InstructionLabel.text = "%s   F L I P S" % [num_flips]
 			$Haw.play()
+			end_game(true)
 	$Whip3.play()
+
 
 func on_released():
 	$LongYee.play()
 	$InstructionLabel.text = ""
 
+
 func _ready() -> void:
 	$BigIron.hit_ground.connect(on_hit_ground)
 	$BigIron.flip_caught.connect(on_flip_caught)
 	$BigIron.released.connect(on_released)
-		
+	
+	JavaScriptBridge.eval("window.parent.postMessage({op: \"ready\"});")
+	
+
+func start_game():
 	var tween = create_tween()
 	tween.tween_callback(func():
 		$Whip1.play() 
@@ -76,7 +116,7 @@ func _ready() -> void:
 		$InstructionLabel.text = ""
 		$BigIron.unlocked = true
 	)
-	
+
 
 func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
 	const thigh_len = 225
@@ -102,6 +142,20 @@ func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	"""
+	This is an entry in the COLONQ micro-game jam, which requires some custom
+	signalling to an external harness. If built with the 'colonq' feature 
+	we'll run inside the harness, otherwise we'll run independently.
+	
+	More details can be found here: https://api.colonq.computer/jam/2026
+	"""
+	var colonq_output = JavaScriptBridge.eval("window.lcolonqJamStart || -1.0")
+	var colonq_started = colonq_output != null and colonq_output > 0.0
+	if not Game.started and (colonq_started or not is_colonq_build()):
+		Game.started = true
+		JavaScriptBridge.eval("window.parent.postMessage({op: \"started\"});")
+		start_game()
+	
 	var ebb = sin(1.2 * Time.get_ticks_msec() / 1000.0)
 	
 	var screen_size = get_viewport_rect().size
@@ -137,12 +191,6 @@ func _physics_process(delta: float) -> void:
 	
 	$Hand.rotation = $Forearm.rotation
 	
-	
-	#var gun_height = max(0, -1 * $BigIron.position.y)
-	#var gun_excess = max(0, gun_height - half_screen.y)
-	#$Camera2D.position = Vector2(0.0, -gun_excess / 2)
-	#$Camera2D.zoom = Vector2.ONE * min(1, abs(1.5 * half_screen.y / max(1, gun_height)))
-
 	var gun_pos = $BigIron.position
 	if $BigIron.state == $BigIron.State.falling:
 		gun_pos += $BigIron.get_cog()

@@ -18,13 +18,19 @@ void fragment() {
 	vec2 centered_uv = -0.5 + UV;
 	vec2 px_pos = centered_uv * texture_size;
 	
-	float uv_height = 1.0 - UV.y;
+	//float uv_height = 1.0 - UV.y;
+	float radial_radius = 0.8;
+	vec2 radial_center = vec2(0.0, radial_radius);
+	float uv_height = length(radial_center - centered_uv) - (radial_radius - 0.5);
 	COLOR = texture(sky_gradient, vec2(uv_height, 0.0));
 	
-	float space_prox = smoothstep(0.5, 0.8, uv_height);
-	for (int lattice_idx = 0; lattice_idx < 3; lattice_idx++) {
-		vec2 rotated_px_pos = rotate(px_pos,  float(lattice_idx) * 3.0 / 17.0);
-		vec2 cell_size = vec2(5000, 4000);
+	float space_prox = smoothstep(0.4, 0.7, uv_height);
+	for (float lattice_idx = 0.0; lattice_idx < 3.0; lattice_idx++) {
+		vec2 rotated_px_pos = rotate(px_pos,  lattice_idx * 3.0 / 17.0);
+		vec2 cell_size = vec2(
+			10000.0 + PI * 500.0 * lattice_idx, 
+			8000.0 - PI * 40.0 * lattice_idx
+		);
 		vec2 local_pos = mod(rotated_px_pos, cell_size);
 		vec2 cell_center = 0.5 * cell_size;
 		

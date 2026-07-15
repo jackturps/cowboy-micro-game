@@ -21,6 +21,8 @@ var cog_dist = 60
 # In radians.
 var flip_progress = 0.0
 
+var unlocked = false
+
 signal hit_ground
 signal flip_caught
 signal released
@@ -43,7 +45,7 @@ func _physics_process(delta: float) -> void:
 	
 	var screen_size = get_viewport_rect().size
 	var mouse_pos = get_viewport().get_mouse_position() - (screen_size / 2)
-	if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
+	if unlocked and Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
 		if state == State.falling and not grounded:
 			flip_caught.emit(flip_progress)
 		flip_progress = 0.0
@@ -110,7 +112,7 @@ func _physics_process(delta: float) -> void:
 		rotation += spin_speed * delta
 		
 		flip_progress += abs(spin_speed * delta)
-			
+
 	"""
 	How do apply force along the pendulum? You take the gravity component, and then
 	limit that to whatever component is moving along the normal vector? But how do

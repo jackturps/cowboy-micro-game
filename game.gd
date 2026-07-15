@@ -6,6 +6,11 @@ Credits:
 	https://pixabay.com/sound-effects/film-special-effects-whip-crack-123738/
 	https://pixabay.com/sound-effects/film-special-effects-whip-06-487886/
 	https://pixabay.com/sound-effects/film-special-effects-whip-snap-242215/
+	https://pixabay.com/photos/full-moon-night-sky-luna-moon-1869760/
+	https://pixabay.com/sound-effects/household-short-whoosh-13x-14526/
+	https://pixabay.com/sound-effects/nature-harsh-wind-515272/
+	https://pixabay.com/sound-effects/nature-cow-moo-122255/
+	Charlie Turpitt
 
 Shout Outs:
 	Tropic of Dinosaur: https://www.gamepoems.com/issue01/
@@ -14,30 +19,41 @@ Shout Outs:
 class_name Game extends Node2D
 
 const gravity = Vector2(0, 1000)
-
+ 
 @onready var screen_size = get_viewport_rect().size
+@onready var prev_gun_rotation = $BigIron.rotation
 
 var blink_countdown = 3.0
 
 func on_hit_ground():
+	$LongYee.stop()
+	$SadHaw.play()
 	$InstructionLabel.text = "F U M B L E D"
 	$Whip3.play()
 
 func on_flip_caught(flip_progress):
+	$LongYee.stop()
+	
 	var num_flips = int(max(0, floor(flip_progress / TAU)))
 	match num_flips:
 		0: 
 			$InstructionLabel.text = "N O   F L I P S"
+			$SadHaw.play()
 		1:
 			$InstructionLabel.text = "1   F L I P"
+			$Haw.play()
 		_:
 			$InstructionLabel.text = "%s   F L I P S" % [num_flips]
+			$Haw.play()
 	$Whip3.play()
 
 func on_released():
+	$LongYee.play()
 	$InstructionLabel.text = ""
 
 func _ready() -> void:
+	$Wind.play()
+	
 	$BigIron.hit_ground.connect(on_hit_ground)
 	$BigIron.flip_caught.connect(on_flip_caught)
 	$BigIron.released.connect(on_released)
@@ -58,7 +74,10 @@ func _ready() -> void:
 		$InstructionLabel.text = "B I G   I R O N"
 	)
 	tween.tween_interval(1.23)
-	tween.tween_callback(func(): $InstructionLabel.text = "")
+	tween.tween_callback(func(): 
+		$InstructionLabel.text = ""
+		$BigIron.unlocked = true
+	)
 	
 
 func solve_leg(thigh: Node2D, foot: Node2D, bend_sign := 1.0) -> void:
@@ -148,6 +167,20 @@ func _physics_process(delta: float) -> void:
 		else:
 			$Head.animation = "blink"
 			blink_countdown = randf_range(0.1, 0.2)
+
+	var spin_speed = abs($BigIron.spin_speed)
+	var volume_target = smoothstep(TAU, 20.0 * TAU, spin_speed)
+	var volume_speed = 50.0 if volume_target > $Whoosh.volume_linear else 0.5
+	$Whoosh.volume_linear = move_toward($Whoosh.volume_linear, volume_target, volume_speed * delta)
+	$Whoosh.pitch_scale = 1.0 + 0.05 * smoothstep(TAU, 3.0 * TAU, spin_speed)
+	if round($BigIron.rotation / TAU) != round(prev_gun_rotation / TAU):
+		$Whoosh.play()
+	prev_gun_rotation = $BigIron.rotation
+	
+	var wind_target = smoothstep(200.0, 20000.0, $BigIron.move_speed.length())
+	volume_speed = 0.5 if volume_target > $Wind.volume_linear else 0.5
+	$Wind.volume_linear = move_toward($Wind.volume_linear, wind_target, volume_speed)
+	$Wind.pitch_scale = 1.0 + 0.1 * $Wind.volume_linear
 
 	
 	$Sky.material.set_shader_parameter("texture_size", $Sky.size)

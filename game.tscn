@@ -1,14 +1,14 @@
-[gd_scene load_steps=40 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=50 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
 [ext_resource type="Texture2D" uid="uid://cipanootrs7il" path="res://sprites/ground.png" id="2_e8heu"]
-[ext_resource type="Texture2D" uid="uid://cvilxtq2o8edd" path="res://sprites/paper_texture.jpg" id="2_hb5m1"]
 [ext_resource type="Texture2D" uid="uid://chlx8provpw24" path="res://sprites/pelvis.png" id="3_7sc4i"]
 [ext_resource type="FontFile" uid="uid://s5pq5850xgpr" path="res://fonts/Vanilla Whale.otf" id="3_boyg6"]
 [ext_resource type="Texture2D" uid="uid://pxcvute1dx5m" path="res://big_iron.png" id="3_fc0e3"]
 [ext_resource type="Texture2D" uid="uid://cub33uiyaoe0e" path="res://sprites/right_thigh.png" id="4_80cx4"]
 [ext_resource type="Shader" uid="uid://bawci4fnea2qr" path="res://sky.gdshader" id="4_f1jbl"]
+[ext_resource type="Texture2D" uid="uid://bmj1kbpj3rsnl" path="res://sprites/moon.png" id="4_vaj68"]
 [ext_resource type="Texture2D" uid="uid://bed4asy5f80wk" path="res://sprites/hand_open_1.PNG" id="5_7jktm"]
 [ext_resource type="Texture2D" uid="uid://b22geo8pshl6i" path="res://sprites/right_foot.png" id="5_80cx4"]
 [ext_resource type="Texture2D" uid="uid://cf22y3mmgxfg7" path="res://sprites/face_blink.png" id="5_qhcbd"]
@@ -25,6 +25,15 @@
 [ext_resource type="AudioStream" uid="uid://by45ooecui4sv" path="res://sfx/whip_1.mp3" id="20_x5p1p"]
 [ext_resource type="AudioStream" uid="uid://dam55q3vvrnlv" path="res://sfx/whip_3.mp3" id="21_qhcbd"]
 [ext_resource type="AudioStream" uid="uid://dp1t2e4m6d4lk" path="res://sfx/whip_2.mp3" id="22_f1jbl"]
+[ext_resource type="AudioStream" uid="uid://ccwswjcvx5h4h" path="res://sfx/long_yee.wav" id="26_i2p71"]
+[ext_resource type="AudioStream" uid="uid://bwjw71o5ie5xd" path="res://sfx/haw.wav" id="27_xa8c5"]
+[ext_resource type="AudioStream" uid="uid://jr2w08qr7hwj" path="res://sfx/harsh_wind.mp3" id="28_7knny"]
+[ext_resource type="AudioStream" uid="uid://cgyfvrg3x5ms8" path="res://sfx/whoosh_1.wav" id="29_7knny"]
+[ext_resource type="AudioStream" uid="uid://b162hlx300f57" path="res://sfx/whoosh_2.wav" id="29_dhpj7"]
+[ext_resource type="AudioStream" uid="uid://y0ubn5nqojn5" path="res://sfx/whoosh_3.wav" id="29_xfvwf"]
+[ext_resource type="AudioStream" uid="uid://dvvjdwrapfmof" path="res://sfx/whoosh_4.wav" id="30_dhpj7"]
+[ext_resource type="AudioStream" uid="uid://c3iuux5yxjj8f" path="res://sfx/whoosh_5.wav" id="31_7knny"]
+[ext_resource type="AudioStream" uid="uid://bid07ygtxc34y" path="res://sfx/sad_haw.wav" id="34_082n1"]
 
 [sub_resource type="Theme" id="Theme_e36ub"]
 default_font = ExtResource("3_boyg6")
@@ -35,7 +44,7 @@ default_font = ExtResource("3_boyg6")
 default_font_size = 800
 
 [sub_resource type="Gradient" id="Gradient_f1jbl"]
-offsets = PackedFloat32Array(0, 0.1903409, 0.8551136, 0.9943182)
+offsets = PackedFloat32Array(0, 0.1903409, 0.74634147, 0.9943182)
 colors = PackedColorArray(0.36, 0.68, 1, 1, 0.33999997, 0.4279999, 1, 1, 0.13288002, 0.07479999, 0.22, 1, 0.04536, 0.023799999, 0.07, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_vaj68"]
@@ -162,16 +171,16 @@ animations = [{
 [sub_resource type="Theme" id="Theme_hb5m1"]
 default_font = ExtResource("3_boyg6")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_bnpwn"]
+streams_count = 5
+stream_0/stream = ExtResource("29_7knny")
+stream_1/stream = ExtResource("29_dhpj7")
+stream_2/stream = ExtResource("29_xfvwf")
+stream_3/stream = ExtResource("30_dhpj7")
+stream_4/stream = ExtResource("31_7knny")
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_feb5d")
-
-[node name="PaperTexture" type="TextureRect" parent="."]
-offset_left = -43124.0
-offset_top = -82470.0
-offset_right = 43105.0
-offset_bottom = 4771.0
-texture = ExtResource("2_hb5m1")
-stretch_mode = 1
 
 [node name="WantedLabel" type="Label" parent="."]
 offset_left = -3956.0
@@ -204,6 +213,12 @@ offset_top = -83116.0
 offset_right = 100000.0
 offset_bottom = 699.0
 color = Color(0.39560002, 0.6578, 0.92, 1)
+
+[node name="Moon" type="Sprite2D" parent="."]
+position = Vector2(32812, -60984)
+rotation = 0.17278759
+scale = Vector2(11.212998, 11.212998)
+texture = ExtResource("4_vaj68")
 
 [node name="Cloud" type="Sprite2D" parent="."]
 position = Vector2(573, -378)
@@ -316,3 +331,20 @@ stream = ExtResource("21_qhcbd")
 
 [node name="Whip3" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("22_f1jbl")
+
+[node name="LongYee" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("26_i2p71")
+
+[node name="Haw" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("27_xa8c5")
+
+[node name="Wind" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("28_7knny")
+
+[node name="Whoosh" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_bnpwn")
+max_polyphony = 8
+
+[node name="SadHaw" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("34_082n1")
+volume_db = -4.0

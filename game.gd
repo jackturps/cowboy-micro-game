@@ -16,6 +16,8 @@ Credits:
 	https://unsplash.com/photos/white-clouds-and-blue-sky-during-daytime-A9_IsUtjHm4
 	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
 	https://unsplash.com/photos/brown-and-black-revolver-pistol-LSu04HMpL7A
+	https://unsplash.com/photos/gold-and-silver-heart-pendant-MGScaQTG8To
+	https://pixabay.com/sound-effects/film-special-effects-sparkler-fuse-nmwav-14738/
 	Charlie Turpitt
 
 Shout Outs:
@@ -32,6 +34,9 @@ const gravity = Vector2(0, 1000)
 
 
 var blink_countdown = 3.0
+
+const max_countdown = 10.0
+var countdown = max_countdown
 
 static func is_colonq_build():
 	return OS.has_feature("colonq")
@@ -51,6 +56,7 @@ func end_game(did_win: bool):
 	else:
 		var tween = create_tween()
 		tween.tween_callback(func():
+			countdown = max_countdown
 			$BigIron.unlocked = true
 			$InstructionLabel.text = ""
 		).set_delay(2.63)
@@ -81,6 +87,10 @@ func on_flip_caught(flip_progress):
 			end_game(true)
 	$Whip3.play()
 
+func on_countdown_expired():
+	$InstructionLabel.text = "T I M E   U P"
+	$SadHaw.play()
+	end_game(false)
 
 func on_released():
 	$LongYee.play()
@@ -91,6 +101,7 @@ func _ready() -> void:
 	$BigIron.hit_ground.connect(on_hit_ground)
 	$BigIron.flip_caught.connect(on_flip_caught)
 	$BigIron.released.connect(on_released)
+	$Fuse.volume_linear = 0.0
 	
 	JavaScriptBridge.eval("window.parent.postMessage({op: \"ready\"});")
 	
@@ -229,3 +240,16 @@ func _physics_process(delta: float) -> void:
 			blink_countdown = randf_range(0.1, 0.2)
 	
 	$Sky.material.set_shader_parameter("texture_size", $Sky.size)
+	
+	var prev_countdown = countdown
+	var fuse_volume_target = 0.0
+	if $BigIron.unlocked and $BigIron.state != $BigIron.State.falling:
+		countdown = max(0, countdown - delta)
+		fuse_volume_target = 1.5
+	$Fuse.volume_linear = move_toward($Fuse.volume_linear, fuse_volume_target, 2.0 * delta)
+	var countdown_factor = countdown / max_countdown
+	$UI/Wick.material.set_shader_parameter("countdown", countdown_factor)
+	$UI/Path2D/PathFollow2D.progress_ratio = 1.0 - countdown_factor
+	
+	if prev_countdown > 0 and countdown <= 0:
+		on_countdown_expired()

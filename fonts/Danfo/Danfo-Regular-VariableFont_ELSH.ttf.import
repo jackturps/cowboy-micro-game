@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://s5pq5850xgpr"
-path="res://.godot/imported/Vanilla Whale.otf-e42f28c956f41fa7047e3f1d673501de.fontdata"
+uid="uid://5u4lnrdpj7n"
+path="res://.godot/imported/Danfo-Regular-VariableFont_ELSH.ttf-42f47f015f4244cbd4ccbf649e41a659.fontdata"
 
 [deps]
 
-source_file="res://fonts/Vanilla Whale.otf"
-dest_files=["res://.godot/imported/Vanilla Whale.otf-e42f28c956f41fa7047e3f1d673501de.fontdata"]
+source_file="res://fonts/Danfo/Danfo-Regular-VariableFont_ELSH.ttf"
+dest_files=["res://.godot/imported/Danfo-Regular-VariableFont_ELSH.ttf-42f47f015f4244cbd4ccbf649e41a659.fontdata"]
 
 [params]
 

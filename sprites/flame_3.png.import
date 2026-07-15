@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pxcvute1dx5m"
-path="res://.godot/imported/big_iron.png-3ddb80da3cb76c51257e4bc57f1c99d0.ctex"
+uid="uid://dwdcosp2x4pix"
+path="res://.godot/imported/flame_3.png-0499555c65ae89cd8ca3224cc73b9d54.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://big_iron.png"
-dest_files=["res://.godot/imported/big_iron.png-3ddb80da3cb76c51257e4bc57f1c99d0.ctex"]
+source_file="res://sprites/flame_3.png"
+dest_files=["res://.godot/imported/flame_3.png-0499555c65ae89cd8ca3224cc73b9d54.ctex"]
 
 [params]
 

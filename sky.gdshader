@@ -19,7 +19,7 @@ void fragment() {
 	float uv_height = length(globe_center - centered_uv) - (globe_radius - 0.5);
 	COLOR = texture(sky_gradient, vec2(uv_height, 0.0));
 	
-	float space_prox = smoothstep(0.4, 0.7, uv_height);
+	float space_prox = smoothstep(0.45, 0.7, uv_height);
 	if (space_prox > 0.0) {
 		for (float lattice_idx = 0.0; lattice_idx < 3.0; lattice_idx++) {
 			vec2 rotated_px_pos = rotate(px_pos,  lattice_idx * 3.0 / 17.0);

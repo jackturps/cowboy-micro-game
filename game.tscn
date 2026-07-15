@@ -1,10 +1,9 @@
-[gd_scene load_steps=54 format=3 uid="uid://dsx05bj2ix1ud"]
+[gd_scene load_steps=62 format=3 uid="uid://dsx05bj2ix1ud"]
 
 [ext_resource type="Script" uid="uid://c0xrakboxq1ce" path="res://big_iron.gd" id="1_80nbo"]
 [ext_resource type="Script" uid="uid://pw7ctlf6huur" path="res://game.gd" id="1_feb5d"]
 [ext_resource type="Texture2D" uid="uid://cipanootrs7il" path="res://sprites/ground.png" id="2_e8heu"]
 [ext_resource type="Texture2D" uid="uid://chlx8provpw24" path="res://sprites/pelvis.png" id="3_7sc4i"]
-[ext_resource type="FontFile" uid="uid://s5pq5850xgpr" path="res://fonts/Vanilla Whale.otf" id="3_boyg6"]
 [ext_resource type="Texture2D" uid="uid://cub33uiyaoe0e" path="res://sprites/right_thigh.png" id="4_80cx4"]
 [ext_resource type="Shader" uid="uid://bawci4fnea2qr" path="res://sky.gdshader" id="4_f1jbl"]
 [ext_resource type="Texture2D" uid="uid://bmj1kbpj3rsnl" path="res://sprites/moon.png" id="4_vaj68"]
@@ -35,19 +34,19 @@
 [ext_resource type="AudioStream" uid="uid://y0ubn5nqojn5" path="res://sfx/whoosh_3.wav" id="29_xfvwf"]
 [ext_resource type="AudioStream" uid="uid://dvvjdwrapfmof" path="res://sfx/whoosh_4.wav" id="30_dhpj7"]
 [ext_resource type="AudioStream" uid="uid://c3iuux5yxjj8f" path="res://sfx/whoosh_5.wav" id="31_7knny"]
+[ext_resource type="FontFile" uid="uid://5u4lnrdpj7n" path="res://fonts/Danfo/Danfo-Regular-VariableFont_ELSH.ttf" id="31_iu0sx"]
 [ext_resource type="AudioStream" uid="uid://bid07ygtxc34y" path="res://sfx/sad_haw.wav" id="34_082n1"]
 [ext_resource type="AudioStream" uid="uid://btgvbfas7rqcy" path="res://sfx/clatter_1.wav" id="35_xex6t"]
-
-[sub_resource type="Theme" id="Theme_e36ub"]
-default_font = ExtResource("3_boyg6")
-default_font_size = 800
-
-[sub_resource type="Theme" id="Theme_boyg6"]
-default_font = ExtResource("3_boyg6")
-default_font_size = 800
+[ext_resource type="Texture2D" uid="uid://dfhjbiiv4hihn" path="res://sprites/wick.png" id="38_4v2jo"]
+[ext_resource type="AudioStream" uid="uid://7jiosjk1ldl0" path="res://sfx/fuse.wav" id="38_kq12w"]
+[ext_resource type="Shader" uid="uid://yfjffj5y7ies" path="res://wick.gdshader" id="38_l1i01"]
+[ext_resource type="Texture2D" uid="uid://cbcg23aije7sv" path="res://sprites/flame_1.png" id="40_edr7y"]
+[ext_resource type="Texture2D" uid="uid://lfkvkajei1xw" path="res://sprites/flame_2.png" id="41_kq12w"]
+[ext_resource type="Texture2D" uid="uid://dwdcosp2x4pix" path="res://sprites/flame_3.png" id="42_t46w6"]
+[ext_resource type="Texture2D" uid="uid://c12jrv4tfqlel" path="res://sprites/flame_4.png" id="43_m28ev"]
 
 [sub_resource type="Gradient" id="Gradient_f1jbl"]
-offsets = PackedFloat32Array(0, 0.1903409, 0.74634147, 0.9943182)
+offsets = PackedFloat32Array(0, 0.29268292, 0.6292683, 0.9902439)
 colors = PackedColorArray(0.36, 0.68, 1, 1, 0.33999997, 0.4279999, 1, 1, 0.13288002, 0.07479999, 0.22, 1, 0.04536, 0.023799999, 0.07, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_vaj68"]
@@ -187,40 +186,46 @@ animations = [{
 }]
 
 [sub_resource type="Theme" id="Theme_hb5m1"]
-default_font = ExtResource("3_boyg6")
+default_font = ExtResource("31_iu0sx")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r62pu"]
+shader = ExtResource("38_l1i01")
+shader_parameter/countdown = 1.0
+
+[sub_resource type="Curve2D" id="Curve2D_edr7y"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 2.7749481, -1048, 0, 0, 0, 0, 19, -948, 0, 0, 0, 0, -10, -761, 0, 0, 0, 0, -23, -611, 0, 0, 0, 0, 0, -345, 0, 0, 0, 0, -30, -177, 0, 0, 0, 0, -13, -21)
+}
+point_count = 7
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lwlx3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("40_edr7y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_kq12w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_t46w6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_m28ev")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_feb5d")
 
-[node name="WantedLabel" type="Label" parent="."]
-offset_left = -3956.0
-offset_top = 729.0
-offset_right = -4.5
-offset_bottom = 2329.0
-scale = Vector2(2, 1)
-theme = SubResource("Theme_e36ub")
-theme_override_colors/font_color = Color(0.06, 0.06, 0.06, 1)
-theme_override_font_sizes/font_size = 220
-text = "W A N T E D"
-horizontal_alignment = 1
-
-[node name="SubtitleLabel" type="Label" parent="."]
-offset_left = -2974.0
-offset_top = 968.0
-offset_right = 1006.0
-offset_bottom = 2568.0
-scale = Vector2(1.5, 1)
-theme = SubResource("Theme_boyg6")
-theme_override_colors/font_color = Color(0.06, 0.06, 0.06, 1)
-theme_override_font_sizes/font_size = 120
-text = "F O R   G U N   S L I N G I N G"
-horizontal_alignment = 1
-
 [node name="Sky" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_vaj68")
-offset_left = -100000.0
+offset_left = -200000.0
 offset_top = -83116.0
-offset_right = 100000.0
+offset_right = 200000.0
 offset_bottom = 699.0
 color = Color(0.39560002, 0.6578, 0.92, 1)
 
@@ -331,14 +336,22 @@ sprite_frames = SubResource("SpriteFrames_215e1")
 offset = Vector2(150, 5)
 
 [node name="InstructionLabel" type="RichTextLabel" parent="."]
-offset_left = -969.0
-offset_top = -201.0
-offset_right = 967.0
-offset_bottom = 451.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1000.0
+offset_top = -1000.0
+offset_right = 1000.0
+offset_bottom = 1000.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = SubResource("Theme_hb5m1")
 theme_override_font_sizes/normal_font_size = 350
-text = "B I G   I R O N"
+text = "BIG   IRON"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -361,3 +374,34 @@ volume_db = 6.0
 
 [node name="SadHaw" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("34_082n1")
+
+[node name="Fuse" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("38_kq12w")
+autoplay = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Wick" type="Sprite2D" parent="UI"]
+material = SubResource("ShaderMaterial_r62pu")
+position = Vector2(104.225044, 1101)
+rotation = -1.5707964
+scale = Vector2(0.563, 0.563)
+texture = ExtResource("38_4v2jo")
+offset = Vector2(960, 0)
+
+[node name="Path2D" type="Path2D" parent="UI"]
+position = Vector2(104.22505, 1101)
+curve = SubResource("Curve2D_edr7y")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="UI/Path2D"]
+position = Vector2(2.7749481, -1048)
+rotation = 1.3863497
+rotates = false
+
+[node name="Flame" type="AnimatedSprite2D" parent="UI/Path2D/PathFollow2D"]
+rotation = -1.3863497
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("SpriteFrames_lwlx3")
+autoplay = "default"
+frame_progress = 0.13174406
+offset = Vector2(0, -57.54)

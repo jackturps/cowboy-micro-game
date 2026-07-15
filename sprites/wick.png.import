@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://l7s6yhsr1ldw"
-path="res://.godot/imported/thigh_right.png-a7612b0ba34e8b0f730dda866b920978.ctex"
+uid="uid://dfhjbiiv4hihn"
+path="res://.godot/imported/wick.png-a0f48c8c60129998af2bca7fe547d9dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/thigh_right.png"
-dest_files=["res://.godot/imported/thigh_right.png-a7612b0ba34e8b0f730dda866b920978.ctex"]
+source_file="res://sprites/wick.png"
+dest_files=["res://.godot/imported/wick.png-a0f48c8c60129998af2bca7fe547d9dc.ctex"]
 
 [params]
 

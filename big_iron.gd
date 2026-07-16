@@ -26,6 +26,7 @@ var flip_progress = 0.0
 
 var unlocked = false
 
+signal state_changed
 signal hit_ground
 signal flip_caught
 signal released
@@ -59,6 +60,7 @@ func _physics_process(delta: float) -> void:
 	# No transitions unless we're unlocked.
 	if unlocked:
 		if Input.is_action_just_pressed("grab") and mouse_pos.distance_to(global_position) < grab_dist_thresh:
+			state_changed.emit()
 			if state == State.falling and not grounded:
 				flip_caught.emit(flip_progress)
 			flip_progress = 0.0
@@ -67,10 +69,10 @@ func _physics_process(delta: float) -> void:
 			$Clatter.play()
 			
 		if state == State.grabbed and not Input.is_action_pressed("grab"):
+			state_changed.emit()
 			state = State.falling
 			$Clatter.play()
 			released.emit()
-		
 	
 	if state in [State.grabbed, State.holstered]:
 		spin_speed *= pow(0.2, delta)

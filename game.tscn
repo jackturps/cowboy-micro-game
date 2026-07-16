@@ -194,9 +194,9 @@ shader_parameter/countdown = 1.0
 
 [sub_resource type="Curve2D" id="Curve2D_edr7y"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 2.7749481, -1048, 0, 0, 0, 0, 19, -948, 0, 0, 0, 0, -10, -761, 0, 0, 0, 0, -23, -611, 0, 0, 0, 0, 0, -345, 0, 0, 0, 0, -30, -177, 0, 0, 0, 0, -13, -21)
+"points": PackedVector2Array(0, 0, 0, 0, -2.2250519, -1053, 0, 0, 0, 0, 19, -948, 0, 0, 0, 0, 9.774948, -864, 0, 0, 0, 0, -9.225052, -777, 0, 0, 0, 0, -20.225052, -611, 0, 0, 0, 0, -18.225052, -538, 0, 0, 0, 0, -1.2250519, -462, 0, 0, 0, 0, 5.774948, -397, 0, 0, 0, 0, 0, -345, 0, 0, 0, 0, -14.225052, -278, 0, 0, 0, 0, -26.225052, -223, 0, 0, 0, 0, -30, -177, 0, 0, 0, 0, -29.225052, -92, 0, 0, 0, 0, -13, -21)
 }
-point_count = 7
+point_count = 14
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lwlx3"]
 animations = [{
@@ -240,11 +240,11 @@ position = Vector2(557, -314)
 texture = ExtResource("5_vaj68")
 
 [node name="Ground" type="TextureRect" parent="."]
-offset_left = -100000.0
-offset_top = 399.5
+offset_left = -100000.01
+offset_top = 359.5
 offset_right = 296246.06
-offset_bottom = 1041.5
-scale = Vector2(0.49999997, 0.73364484)
+offset_bottom = 540.5
+scale = Vector2(0.681, 1)
 texture = ExtResource("2_e8heu")
 stretch_mode = 1
 
@@ -287,10 +287,9 @@ offset = Vector2(120, -130)
 flip_v = true
 
 [node name="Torso" type="AnimatedSprite2D" parent="."]
-position = Vector2(-115, -147)
-scale = Vector2(0.35, 0.35)
+position = Vector2(-109.79, -147)
 sprite_frames = SubResource("SpriteFrames_mfdv2")
-offset = Vector2(180, 200)
+offset = Vector2(70, 91.72)
 
 [node name="BigIron" type="Node2D" parent="."]
 position = Vector2(-249.00003, -142)
@@ -311,6 +310,7 @@ max_polyphony = 8
 
 [node name="Wind" type="AudioStreamPlayer" parent="BigIron"]
 stream = ExtResource("28_7knny")
+volume_db = -80.0
 autoplay = true
 
 [node name="Bicep" type="AnimatedSprite2D" parent="."]
@@ -349,7 +349,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_hb5m1")
 theme_override_font_sizes/normal_font_size = 350
-text = "BIG   IRON"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -383,25 +382,25 @@ autoplay = true
 
 [node name="Wick" type="Sprite2D" parent="UI"]
 material = SubResource("ShaderMaterial_r62pu")
-position = Vector2(104.225044, 1101)
+position = Vector2(104.225044, 1141)
 rotation = -1.5707964
 scale = Vector2(0.563, 0.563)
 texture = ExtResource("38_4v2jo")
 offset = Vector2(960, 0)
 
 [node name="Path2D" type="Path2D" parent="UI"]
-position = Vector2(104.22505, 1101)
+position = Vector2(104.22505, 1141)
 curve = SubResource("Curve2D_edr7y")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="UI/Path2D"]
-position = Vector2(2.7749481, -1048)
+position = Vector2(-2.2250519, -1053)
 rotation = 1.3863497
 rotates = false
 
 [node name="Flame" type="AnimatedSprite2D" parent="UI/Path2D/PathFollow2D"]
-rotation = -1.3863497
-scale = Vector2(0.75, 0.75)
+rotation = -1.3910275
+scale = Vector2(0.45, 0.4)
 sprite_frames = SubResource("SpriteFrames_lwlx3")
 autoplay = "default"
-frame_progress = 0.13174406
+frame_progress = 0.24900894
 offset = Vector2(0, -57.54)

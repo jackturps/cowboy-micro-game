@@ -3,21 +3,6 @@
 
 """
 Credits:
-	https://unsplash.com/photos/a-man-sitting-on-a-chair-outside-qon55SxMVCw
-	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
-	https://www.dafont.com/vanilla-whale.font?l[]=10
-	https://pixabay.com/sound-effects/film-special-effects-whip-crack-123738/
-	https://pixabay.com/sound-effects/film-special-effects-whip-06-487886/
-	https://pixabay.com/sound-effects/film-special-effects-whip-snap-242215/
-	https://pixabay.com/photos/full-moon-night-sky-luna-moon-1869760/
-	https://pixabay.com/sound-effects/household-short-whoosh-13x-14526/
-	https://pixabay.com/sound-effects/nature-harsh-wind-515272/
-	https://pixabay.com/sound-effects/nature-cow-moo-122255/
-	https://unsplash.com/photos/white-clouds-and-blue-sky-during-daytime-A9_IsUtjHm4
-	https://pixabay.com/photos/hat-cowboy-white-brown-leather-316399/
-	https://unsplash.com/photos/brown-and-black-revolver-pistol-LSu04HMpL7A
-	https://unsplash.com/photos/gold-and-silver-heart-pendant-MGScaQTG8To
-	https://pixabay.com/sound-effects/film-special-effects-sparkler-fuse-nmwav-14738/
 	Charlie Turpitt
 
 Shout Outs:
@@ -27,6 +12,8 @@ Shout Outs:
 class_name Game extends Node2D
 
 static var started = false
+
+@onready var clear_text_tween = create_tween()
 
 const gravity = Vector2(0, 1000)
 
@@ -38,14 +25,14 @@ var blink_countdown = 3.0
 const max_countdown = 10.0
 var countdown = max_countdown
 
+
 static func is_colonq_build():
 	return OS.has_feature("colonq")
 
 
 func end_game(did_win: bool):
-	$BigIron.unlocked = false
-	
 	if is_colonq_build():
+		$BigIron.unlocked = false
 		var tween = create_tween()
 		tween.tween_callback(func():
 			Game.started = false
@@ -54,12 +41,12 @@ func end_game(did_win: bool):
 			get_tree().reload_current_scene()
 		).set_delay(2.63)
 	else:
-		var tween = create_tween()
-		tween.tween_callback(func():
-			countdown = max_countdown
-			$BigIron.unlocked = true
+		clear_text_tween.kill()
+		clear_text_tween = create_tween()
+		clear_text_tween.tween_callback(func():
 			$InstructionLabel.text = ""
 		).set_delay(2.63)
+
 
 func on_hit_ground():
 	$LongYee.stop()
@@ -96,8 +83,15 @@ func on_released():
 	$LongYee.play()
 	$InstructionLabel.text = ""
 
+func on_state_changed():
+	clear_text_tween.kill()
+	$InstructionLabel.text = ""
 
 func _ready() -> void:
+	if not is_colonq_build():
+		$UI.queue_free()
+	
+	$BigIron.state_changed.connect(on_state_changed)
 	$BigIron.hit_ground.connect(on_hit_ground)
 	$BigIron.flip_caught.connect(on_flip_caught)
 	$BigIron.released.connect(on_released)
@@ -108,12 +102,14 @@ func _ready() -> void:
 
 func start_game():
 	var tween = create_tween()
+	
+	tween.tween_interval(1.23)
 	tween.tween_callback(func():
 		$Whip1.play() 
 		$InstructionLabel.text = "F L I P"
 	)
 	tween.tween_interval(1.23)
-	tween.tween_callback(func(): 
+	tween.tween_callback(func():
 		$Whip2.play()
 		$InstructionLabel.text = "Y E R"
 	)
@@ -166,6 +162,8 @@ func _physics_process(delta: float) -> void:
 		Game.started = true
 		JavaScriptBridge.eval("window.parent.postMessage({op: \"started\"});")
 		start_game()
+	if not Game.started:
+		return
 	
 	var ebb = sin(1.2 * Time.get_ticks_msec() / 1000.0)
 	
@@ -185,8 +183,8 @@ func _physics_process(delta: float) -> void:
 	
 	$Torso.position = $Bicep.position
 	var torso_ebb = (1.0 + ebb * 0.02)
-	$Torso.scale.x = 0.35 * (1 / torso_ebb)
-	$Torso.scale.y = 0.35 * torso_ebb
+	$Torso.scale.x = (1 / torso_ebb)
+	$Torso.scale.y = torso_ebb
 		
 	# Forearm points towards hand and squashes/stretches to make up distance.
 	const forearm_len = 300
@@ -241,11 +239,18 @@ func _physics_process(delta: float) -> void:
 	
 	$Sky.material.set_shader_parameter("texture_size", $Sky.size)
 	
+	if not is_colonq_build():
+		return
+		
+	"""
+	We only want a timer for the colonq jam build. Its necessary for the microgame
+	but makes the standalone playground worse.
+	"""
 	var prev_countdown = countdown
 	var fuse_volume_target = 0.0
 	if $BigIron.unlocked and $BigIron.state != $BigIron.State.falling:
 		countdown = max(0, countdown - delta)
-		fuse_volume_target = 1.5
+		fuse_volume_target = 1.0
 	$Fuse.volume_linear = move_toward($Fuse.volume_linear, fuse_volume_target, 2.0 * delta)
 	var countdown_factor = countdown / max_countdown
 	$UI/Wick.material.set_shader_parameter("countdown", countdown_factor)
